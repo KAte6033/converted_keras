@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Классификация изображения</title>
+</head>
+<body>
+    <h1>Загрузите изображение</h1>
+    <form id="upload-form" enctype="multipart/form-data">
+        <input type="file" name="file" accept="image/*" required />
+        <button type="submit">Отправить</button>
+    </form>
+
+    <h2 id="result"></h2>
+    <a href="/logout">Выйти</a>
+
+    <script>
+        const form = document.getElementById('upload-form');
+        const result = document.getElementById('result');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+
+            const response = await fetch('/predict/', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            result.textContent = `Класс: ${data.class}, уверенность: ${data.confidence.toFixed(2)}`;
+        });
+    </script>
+</body>
+</html>
