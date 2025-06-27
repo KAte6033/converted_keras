@@ -30,8 +30,6 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # шаблоны
 templates = Jinja2Templates(directory="templates")
-
-
 #
 #
 
@@ -91,15 +89,10 @@ def logout():
 # async def read_items(session: str = Depends(cookie_scheme)):
 #     return {"session": session}
 
-#
-#
-
-
 
 # @app.get("/")
 # def main_page(request: Request):
 #     return templates.TemplateResponse("index.html", {"request": request})
-
 
 
 # @app.get("/")
@@ -107,7 +100,7 @@ def logout():
 #     return {"message": "API работает"}
 
 # Загружаем модель один раз при старте сервера
-model = load_model("keras_Model.h5", compile=False)
+model = load_model("keras_model.h5", compile=False)
 
 # Загружаем метки классов
 class_names = [line.strip() for line in open("labels.txt", "r").readlines()]
@@ -137,3 +130,7 @@ async def predict(file: UploadFile = File(...), session: str = Depends(cookie_sc
         "class": class_name,
         "confidence": confidence_score
     })
+
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
