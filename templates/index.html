@@ -2,16 +2,19 @@
 <html>
 <head>
     <title>Классификация изображения</title>
+    <link rel="stylesheet" href="/static/ind.css">
 </head>
 <body>
-    <h1>Загрузите изображение</h1>
-    <form id="upload-form" enctype="multipart/form-data">
-        <input type="file" name="file" accept="image/*" required />
-        <button type="submit">Отправить</button>
-    </form>
+    <div class="container">
+        <h1>Загрузите изображение</h1>
+        <form id="upload-form" enctype="multipart/form-data">
+            <input type="file" name="file" accept="image/*" required />
+            <button type="submit">Отправить</button>
+        </form>
 
-    <h2 id="result"></h2>
-    <a href="/logout">Выйти</a>
+        <h2 id="result"></h2>
+        <a href="/logout">Выйти</a>
+    </div>
 
     <script>
         const form = document.getElementById('upload-form');
