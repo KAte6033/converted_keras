@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Классификация изображения</title>
+    <link rel="stylesheet" href="/static/no_reg.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+        .message {
+            font-size: 1.2rem;
+            color: #333;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .button-link {
+            display: inline-block;
+            width: 200px;
+            padding: 0.7rem;
+            background-color: #3f51b5;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 30px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button-link:hover {
+            background-color: #303f9f;
+        }
+        img {
+            max-width: 300px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="image">
+        <a href="/static/orig.jpeg" target="_blank">
+            <img src="/static/orig.jpeg" alt="Описание изображения">
+        </a>
+        <div class="description">
+            Не расстраивайтесь, вот вам милая свинка))
+        </div>
+    </div>
+
+    <div class="message">
+        Без регистрации использовать модель нельзя.
+    </div>
+
+    <a href="/login" class="button-link">Войти</a>
+
+</body>
+</html>
