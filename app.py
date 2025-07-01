@@ -1,3 +1,4 @@
+from argon2 import PasswordHasher
 from fastapi import FastAPI, File, UploadFile, Request, Form, Depends, HTTPException
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
@@ -10,9 +11,11 @@ from starlette.exceptions import HTTPException as StarletteHTTPException
 from fastapi.exception_handlers import http_exception_handler
 from starlette.status import HTTP_403_FORBIDDEN
 from fastapi.staticfiles import StaticFiles
+import uvicorn
 from utils import json_to_dict_list
 from typing import Optional
 import json
+# from argon2 import PasswordHasher
 
 from PIL import Image, ImageOps
 import numpy as np
@@ -23,6 +26,9 @@ from fastapi.security import APIKeyCookie
 # from fastapi import FastAPI, File, UploadFile, 
 # from fastapi.templating import Jinja2Templates
 # from fastapi.staticfiles import StaticFiles
+
+
+ph = PasswordHasher()
 
 path_to_json = "users.json"
 
@@ -178,8 +184,14 @@ def login_page(request: Request):
     return templates.TemplateResponse("no_reg.html", {"request": request})
 
 @app.get("/login", response_class=HTMLResponse)
-def login_page(request: Request):
+def login_p(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
+
+
+@app.get("/register", response_class=HTMLResponse)
+def register_page(request: Request):
+    return templates.TemplateResponse("register.html", {"request": request})
+
 
 # @app.post("/login")
 # def login(username: str = Form(...), password: str = Form(...)):
