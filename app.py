@@ -1,3 +1,4 @@
+import os
 from argon2 import PasswordHasher
 from fastapi import FastAPI, File, UploadFile, Request, Form, Depends, HTTPException
 from fastapi.templating import Jinja2Templates
@@ -193,6 +194,8 @@ def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
 
+
+
 # @app.post("/login")
 # def login(username: str = Form(...), password: str = Form(...)):
 #     if users.get(username) == password:
@@ -203,15 +206,67 @@ def register_page(request: Request):
 
 
 
-# Загрузка пользователей из JSON при старте приложения
-with open("users.json", "r", encoding="utf-8") as f:
-    users = json.load(f)
+@app.post("/register")
+def register(username: str = Form(...), password: str = Form(...)):
+    # Загружаем текущий users.json
+    if os.path.exists("users.json"):
+        with open("users.json", "r", encoding="utf-8") as f:
+            users_list = json.load(f)
+    else:
+        users_list = []
 
-# Преобразуем в словарь для быстрого поиска: login -> password
-user_credentials = {user["login"]: user["password"] for user in users}
+    # Проверяем наличие пользователя
+    if any(user["login"] == username and user[username] == password for user in users_list):
+        # Если уже есть, перенаправляем
+        return RedirectResponse("/")
+    
+    # Добавляем нового пользователя
+    users_list.append({"login": username, "password": password})
+
+    # Сохраняем обратно в файл
+    with open("users.json", "w", encoding="utf-8") as f:
+        json.dump(users_list, f, ensure_ascii=False, indent=2)
+
+    # Устанавливаем cookie и перенаправляем
+    response = RedirectResponse("/login", status_code=HTTP_302_FOUND)
+    return response
+
+
+
+
+
+
+
+
+
+
+
+# with open("users.json", "rw", encoding="utf-8") as f:
+#     users_no_reg = json.load(f)
+
+# # Преобразуем в словарь для быстрого поиска: login -> password
+# user_not_reg = {user["login"]: user["password"] for user in users_no_reg}
+
+# @app.post("/register")
+# def register(username: str = Form(...), password: str = Form(...)):
+#     if username not in user_not_reg:
+#         # and user_credentials[username] == password
+#         response = RedirectResponse("/", status_code=HTTP_302_FOUND)
+#         response.set_cookie(key="session", value=username, httponly=True)
+#         return response
+#     return RedirectResponse("/no_reg", status_code=302)
+
+
+
 
 @app.post("/login")
 def login(username: str = Form(...), password: str = Form(...)):
+    # Загрузка пользователей из JSON при старте приложения
+    with open("users.json", "r", encoding="utf-8") as f:
+        users = json.load(f)
+
+    # Преобразуем в словарь для быстрого поиска: login -> password
+    user_credentials = {user["login"]: user["password"] for user in users}
     if username in user_credentials and user_credentials[username] == password:
         response = RedirectResponse("/", status_code=HTTP_302_FOUND)
         response.set_cookie(key="session", value=username, httponly=True)

@@ -148,5 +148,21 @@
     "special_notes": "Без особых примет",
     "login": "olga.nikitina",
     "password": "Pass10!2025"
+  },
+  {
+    "login": "admin",
+    "password": "12345"
+  },
+  {
+    "login": "tot",
+    "password": "23"
+  },
+  {
+    "login": "pop",
+    "password": "67"
+  },
+  {
+    "login": "lol",
+    "password": "28"
   }
 ]
