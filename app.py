@@ -16,6 +16,7 @@ import uvicorn
 from utils import json_to_dict_list
 from typing import Optional
 import json
+import tk
 # from argon2 import PasswordHasher
 
 from PIL import Image, ImageOps
@@ -216,12 +217,13 @@ def register(username: str = Form(...), password: str = Form(...)):
         users_list = []
 
     # Проверяем наличие пользователя
-    if any(user["login"] == username and user[username] == password for user in users_list):
+    hashed_password = ph.hash(password)
+    if any(user["login"] == username and user[username] == hashed_password for user in users_list):
         # Если уже есть, перенаправляем
         return RedirectResponse("/")
     
     # Добавляем нового пользователя
-    users_list.append({"login": username, "password": password})
+    users_list.append({"login": username, "password": hashed_password})
 
     # Сохраняем обратно в файл
     with open("users.json", "w", encoding="utf-8") as f:
@@ -265,8 +267,22 @@ def login(username: str = Form(...), password: str = Form(...)):
     with open("users.json", "r", encoding="utf-8") as f:
         users = json.load(f)
 
-    # Преобразуем в словарь для быстрого поиска: login -> password
     user_credentials = {user["login"]: user["password"] for user in users}
+
+    if username in user_credentials:
+
+        try:
+            if ph.verify(user_credentials[username], password):
+                response = RedirectResponse("/", status_code=HTTP_302_FOUND)
+                response.set_cookie(key="session", value=username, httponly=True)
+                return response
+        except Exception:
+        # Ловим ошибку при неверном пароле
+            return RedirectResponse("/no_reg", status_code=302)
+
+    # Преобразуем в словарь для быстрого поиска: login -> password
+    
+
     if username in user_credentials and user_credentials[username] == password:
         response = RedirectResponse("/", status_code=HTTP_302_FOUND)
         response.set_cookie(key="session", value=username, httponly=True)
