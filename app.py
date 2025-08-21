@@ -1,3 +1,9 @@
+import warnings
+
+# Подавляем предупреждения об устаревших модулях в tensorflow и jax
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="tensorflow")
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="jax")
+
 import os
 from argon2 import PasswordHasher
 from fastapi import FastAPI, File, UploadFile, Request, Form, Depends, HTTPException
@@ -172,7 +178,7 @@ json_path = "/home/smile/converted_keras/users.json"
 @app.exception_handler(StarletteHTTPException)
 async def custom_http_exception_handler(request: Request, exc: StarletteHTTPException):
     if exc.status_code == HTTP_403_FORBIDDEN:
-        return RedirectResponse("/login")
+        return RedirectResponse("/login", status_code=HTTP_302_FOUND)
     # всё остальное отдаём штатному обработчику
     return await http_exception_handler(request, exc)
 
@@ -220,7 +226,7 @@ def register(username: str = Form(...), password: str = Form(...)):
     hashed_password = ph.hash(password)
     if any(user["login"] == username and user[username] == hashed_password for user in users_list):
         # Если уже есть, перенаправляем
-        return RedirectResponse("/")
+        return RedirectResponse("/", status_code=HTTP_302_FOUND)
     
     # Добавляем нового пользователя
     users_list.append({"login": username, "password": hashed_password})
