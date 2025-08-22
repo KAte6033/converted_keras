@@ -78,84 +78,6 @@ def get_all_users(
     
     return filltred_users
 
-# @app.get("/users/{enrollment_year}")
-# def get_all_users_enrollment_year(enrollment_year: int):
-#     users = json_to_dict_list(path_to_json)
-#     return_list = []
-#     for user in users:
-#         if user["enrollment_year"] == enrollment_year:
-#             return_list.append(user)
-#     return return_list
-
-
-# @app.get("/users/{enrollment_year}")
-# def get_all_users_enrollment_year(enrollment_year: int, major: Optional[str] = None, special_notes: Optional[str] = "Без особых примет"):
-#     users = json_to_dict_list(path_to_json)
-#     filltred_users = []
-#     for user in users:
-#         if user["enrollment_year"] == enrollment_year:
-#             filltred_users.append(user)
-#     if major:
-#         filltred_users = [user for user in filltred_users if user["major"].lower() == major.lower()]
-#     if special_notes:
-#         filltred_users = [user for user in filltred_users if user["special_notes"].lower() == special_notes.lower()]
-    
-#     return filltred_users
-
-
-# @app.get("/users/{user_id}")
-# def get_all_users_enrollment_year(user_id: int, major: Optional[str] = None, special_notes: Optional[str] = "Без особых примет"):
-#     users = json_to_dict_list(path_to_json)
-#     filltred_users = []
-#     for user in users:
-#         if user["user_id"] == user_id:
-#             filltred_users.append(user)
-#     if major:
-#         filltred_users = [user for user in filltred_users if user["major"].lower() == major.lower()]
-#     if special_notes:
-#         filltred_users = [user for user in filltred_users if user["special_notes"].lower() == special_notes.lower()]
-    
-#     return filltred_users
-
-
-# @app.get("/users")
-# def get_all_user(user_id: Optional[int] = None):
-#     users = json_to_dict_list(path_to_json)
-#     if user_id is None:
-#         return users
-#     else:
-#         return_list = []
-#         for user in users:
-#             if user["user_id"] == user_id:
-#                 return_list.append(user)
-#         return return_list
-
-
-# @app.get("/users")
-# def get_all_users(enrollment_year: Optional[int] = None):
-#     users = json_to_dict_list(path_to_json)
-#     if enrollment_year is None:
-#         return users
-#     else:
-#         return_list = []
-#         for user in users:
-#             if user["enrollment_year"] == enrollment_year:
-#                 return_list.append(user)
-#         return return_list
-
-# @app.get("/users/")
-# def get_user(user_id: Optional[int] = None):
-#     users = json_to_dict_list(path_to_json)
-#     if user_id is None:
-#         return users
-#     else:
-#         return_list = []
-#         for user in users:
-#             if user["user_id"] == user_id:
-#                 return_list.append(user)
-#         return return_list
-    
-
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -168,11 +90,6 @@ cookie_scheme = APIKeyCookie(name="session")
 
 json_path = "/home/smile/converted_keras/users.json"
 
-# users = {
-#     "admin": "1234",
-#     "user": "abcd",
-#     "guest": "guest"
-# }
 
 
 @app.exception_handler(StarletteHTTPException)
@@ -201,18 +118,6 @@ def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
 
 
-
-
-# @app.post("/login")
-# def login(username: str = Form(...), password: str = Form(...)):
-#     if users.get(username) == password:
-#         response = RedirectResponse("/", status_code=HTTP_302_FOUND)
-#         response.set_cookie(key="session", value=username, httponly=True)
-#         return response
-#     raise HTTPException(status_code=401, detail="Неверный логин или пароль")
-
-
-
 @app.post("/register")
 def register(username: str = Form(...), password: str = Form(...)):
     # Загружаем текущий users.json
@@ -238,33 +143,6 @@ def register(username: str = Form(...), password: str = Form(...)):
     # Устанавливаем cookie и перенаправляем
     response = RedirectResponse("/login", status_code=HTTP_302_FOUND)
     return response
-
-
-
-
-
-
-
-
-
-
-
-# with open("users.json", "rw", encoding="utf-8") as f:
-#     users_no_reg = json.load(f)
-
-# # Преобразуем в словарь для быстрого поиска: login -> password
-# user_not_reg = {user["login"]: user["password"] for user in users_no_reg}
-
-# @app.post("/register")
-# def register(username: str = Form(...), password: str = Form(...)):
-#     if username not in user_not_reg:
-#         # and user_credentials[username] == password
-#         response = RedirectResponse("/", status_code=HTTP_302_FOUND)
-#         response.set_cookie(key="session", value=username, httponly=True)
-#         return response
-#     return RedirectResponse("/no_reg", status_code=302)
-
-
 
 
 @app.post("/login")
@@ -296,45 +174,11 @@ def login(username: str = Form(...), password: str = Form(...)):
     return RedirectResponse("/no_reg", status_code=302)
 
 
-# @app.post("/login")
-# def login(username: str = Form(...), password: str = Form(...)):
-#     if users_login.get(login) == password:
-#         response = RedirectResponse("/", status_code=HTTP_302_FOUND)
-#         response.set_cookie(key="session", value=username, httponly=True)
-#         return response
-#     raise HTTPException(status_code=401, detail="Неверный логин или пароль")
-
 @app.get("/logout")
 def logout():
     response = RedirectResponse("/login", status_code=HTTP_302_FOUND)
     response.delete_cookie("session")
     return response
-
-
-
-# @app.get("/login/")
-# async def login(request: Request):
-#     # Здесь можно добавить логику аутентификации
-#     # Например, проверка логина и пароля
-#     # Для простоты, просто создадим сессию
-#     session_id = secrets.token_urlsafe(16)
-#     response = RedirectResponse(url="/items/")
-#     response.set_cookie(key="session", value=session_id)
-#     return response 
-
-# @app.get("/items/")
-# async def read_items(session: str = Depends(cookie_scheme)):
-#     return {"session": session}
-
-
-# @app.get("/")
-# def main_page(request: Request):
-#     return templates.TemplateResponse("index.html", {"request": request})
-
-
-# @app.get("/")
-# def read_root():
-#     return {"message": "API работает"}
 
 # Загружаем модель один раз при старте сервера
 model = load_model("keras_model.h5", compile=False)
